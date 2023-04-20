@@ -28,7 +28,7 @@ public class ItemRepositoryImpl implements ItemRepository {
 
     @Override
     public List<Item> findOtherItems(Long itemId) {
-        return em.createNativeQuery("select * from Item where item_Id != ? order by rand() limit 4", Item.class)
+        return em.createNativeQuery("select * from item where item_Id != ? order by rand() limit 4", Item.class)
                 .setParameter(1, itemId)
                 .getResultList();
     }
