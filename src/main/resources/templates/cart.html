@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>cart</title>
+  <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+  <!-- Bootstrap JS -->
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+  <script>
+    $(document).ready(function () {
+      let message = "[[${msg}]]"
+      if (message != "") {
+        alert(message);
+      }
+    })
+  </script>
+</head>
+<body>
+<nav th:replace="fragments/bodyHeader :: bodyHeader" />
+<div class="container mt-5 mb-5">
+  <div class="d-flex justify-content-center row">
+    <div class="col-md-8">
+      <div class="p-2">
+        <h4>Shopping cart</h4>
+      </div>
+      <div class="d-flex flex-row justify-content-between align-items-center p-2 bg-white mt-4 px-3 rounded" th:each="cartItem : ${cartItems}">
+        <div class="mr-1"><img class="rounded" src="https://i.imgur.com/XiFJkhI.jpg" th:src="${cartItem.item.image}" width="70"></div>
+        <div class="d-flex flex-column align-items-center product-details"><span class="font-weight-bold" style="width: 68.42px;" th:text="${cartItem.item.name}">Basic T-shirt</span>
+          <div class="d-flex flex-row product-desc">
+            <div class="size mr-1"><span class="text-grey">품목:</span><span class="font-weight-bold" th:text="${cartItem.item.dtype}">&nbsp;M</span></div>
+          </div>
+        </div>
+
+        <div class="d-flex flex-row align-items-center qty"><i class="fa fa-minus text-danger"></i>
+          <form th:action="@{/cart/{id}/update (id=${cartItem.id})}">
+            <input type="number" class="text-grey mt-1 mr-1 ml-1" th:name="count" th:value="${cartItem.count}" style="width: 30px;">
+            <button class="btn btn-outline-warning btn-sm ml-2" type="submit">변경</button></form>
+        </div>
+        <div>
+          <h5 class="text-grey" th:text="|${#numbers.formatInteger(cartItem.price, 3, 'COMMA')}원|">$20.00</h5>
+        </div>
+        <div class="d-flex align-items-center"><a th:href="@{/cart/{id}/remove (id=${cartItem.id})}" class="btn btn-outline-warning btn-sm ml-2" type="button">삭제</a></div>
+      </div>
+      <div class="d-flex flex-row align-items-center mt-3 p-2 bg-white rounded">
+        <h2 th:if="${cartItems.size() == 0}" th:text="|총합: 0원|">총합:</h2>
+        <h2 th:unless="${cartItems.size() == 0}" th:text="|총합: ${#numbers.formatInteger(#aggregates.sum(cartItems.![price]), 3, 'COMMA')}원|">총합:</h2>
+      </div>
+      <div class="d-flex flex-row align-items-center mt-3 p-2 bg-white rounded"><a th:href="@{/order}" class="btn btn-warning btn-block btn-lg ml-2 pay-button">주문하러 가기</a></div>
+    </div>
+  </div>
+</div>
+<footer th:replace="fragments/footer :: footer"></footer>
+</body>
+</html>
