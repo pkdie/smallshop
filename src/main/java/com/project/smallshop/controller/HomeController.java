@@ -1,24 +1,15 @@
 package com.project.smallshop.controller;
 
-import com.project.smallshop.Service.CartItemService;
 import com.project.smallshop.Service.ItemService;
-import com.project.smallshop.domain.CartItem;
 import com.project.smallshop.domain.item.Item;
-import com.project.smallshop.domain.member.Member;
 import com.project.smallshop.dto.Pagination;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @Controller

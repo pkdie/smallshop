@@ -2,7 +2,6 @@ package com.project.smallshop.controller;
 
 import com.project.smallshop.Service.*;
 import com.project.smallshop.domain.*;
-import com.project.smallshop.domain.item.Item;
 import com.project.smallshop.domain.member.Member;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,10 +27,6 @@ public class OrderController {
     private final MemberCouponService memberCouponService;
     private final OrderService orderService;
     private final CartService cartService;
-    private final ItemService itemService;
-    private final ReviewService reviewService;
-    private final MemberService memberService;
-    private final OrderItemService orderItemService;
 
     @GetMapping("/order")
     public String order(Model model, HttpServletRequest request) {

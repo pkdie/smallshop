@@ -1,9 +1,7 @@
 package com.project.smallshop.controller;
 
 import com.project.smallshop.Service.CartItemService;
-import com.project.smallshop.Service.ItemService;
 import com.project.smallshop.domain.CartItem;
-import com.project.smallshop.domain.item.Item;
 import com.project.smallshop.domain.member.Member;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +22,6 @@ import java.util.List;
 public class CartController {
 
     private final CartItemService cartItemService;
-    private final ItemService itemService;
 
     @GetMapping("/cart")
     public String cart(Model model, HttpServletRequest request, RedirectAttributes redirectAttributes) {
