@@ -25,6 +25,30 @@ cache:
 # 프로젝트 내에 권한이 추가된 gradlew를 활용하여 clean, build를 진행한다.
 script: "./gradlew clean build"
 
+# 버킷 관련 부분 -------------------------
+before_deploy:
+  # 현재 위치의 모든 파일을 smallshop으로 압축한다.
+  - zip -r smallshop *
+  # deploy 디렉토리를 Travis가 실행 중인 위치에 생성한다.
+  - mkdir -p deploy
+  # 생성한 .zip 파일을 deploy 아래로 이동한다.
+  - mv smallshop.zip deploy/smallshop.zip
+
+# 외부 서비스와 연동할 행위들을 선언한다.
+deploy:
+  - provider: s3
+    access_key_id: $AWS_ACCESS_KEY # Travis settings에 설정된 값
+    secret_access_key: $AWS_SECRET_KEY # Travis settings에 설정된 값
+    bucket: smallshopimages # s3 버킷
+    region: ap-northeast-2
+    skip_cleanup: true
+    acl: private # zip 파일 접근을 private으로
+    local_dir: deploy # before_deploy에서 생성한 디렉토리로 이동한다. 해당 위치의 파일만 이동시킨다.
+    wait-until-deployed: true
+    on:
+      branch: master
+# 버킷 관련 부분 끝 ------------------------------------------------
+
 # CI 실행 완료 시 작성한 이메일로 알람
 notifications:
   email:
