@@ -142,6 +142,9 @@ public class OrderServiceImpl implements OrderService{
         if (order.getStatus() == OrderStatus.CANCEL) {
             throw new IllegalStateException("주문취소 된 상품을 주문완료 할 수 없습니다.");
         }
+        if (order.getStatus() == OrderStatus.COMP) {
+            throw new IllegalStateException("이미 주문완료 되었습니다.");
+        }
         order.setStatus(OrderStatus.COMP);
         order.getDelivery().setStatus(DeliveryStatus.COMP);
     }

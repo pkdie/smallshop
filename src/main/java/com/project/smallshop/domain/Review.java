@@ -29,6 +29,10 @@ public class Review {
     @JoinColumn(name = "item_id")
     private Item item;
 
+    @OneToOne(fetch = LAZY)
+    @JoinColumn(name = "order_item_id")
+    private OrderItem orderItem;
+
     private LocalDateTime date;
 
     private String title;
@@ -46,10 +50,11 @@ public class Review {
         item.getReviews().add(this);
     }
 
-    public static Review createReview(Member member, Item item, String title, String content) {
+    public static Review createReview(Member member, Item item, OrderItem orderItem, String title, String content) {
         Review review = new Review();
         review.setMember(member);
         review.setItem(item);
+        review.setOrderItem(orderItem);
         review.setTitle(title);
         review.setContent(content);
         review.setDate(LocalDateTime.now());

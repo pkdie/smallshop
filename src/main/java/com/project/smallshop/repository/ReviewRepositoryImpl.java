@@ -17,4 +17,16 @@ public class ReviewRepositoryImpl implements ReviewRepository{
     public void save(Review review) {
         em.persist(review);
     }
+
+    @Override
+    public Review findByOrderItemId(Long orderItemId) {
+        return em.createQuery("select r from Review r where orderItem.id = :orderItemId", Review.class)
+                .setParameter("orderItemId", orderItemId)
+                .getSingleResult();
+    }
+
+    @Override
+    public void remove(Review review) {
+        em.remove(review);
+    }
 }

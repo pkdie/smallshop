@@ -153,6 +153,7 @@
                     <th>수령인</th>
                     <th>주문 일자</th>
                     <th>주문 상태</th>
+                    <th>배송 상태</th>
                     <th></th>
                 </tr>
                 </thead>
@@ -165,6 +166,7 @@
                     <td th:text="${order.receiverName}">수령인</td>
                     <td th:text="${#temporals.format(order.date, 'yyyy-MM-dd')}">주문 일자</td>
                     <td th:text="${order.status}">주문 상태</td>
+                    <td th:text="${order.delivery.status}">배송 상태</td>
                     <td>
                         <a href="#" th:href="@{/orderList/view/{id} (id=${order.id})}" class="view" title="View" data-toggle="tooltip"><i class="material-icons">&#xE417;</i></a>
                     </td>

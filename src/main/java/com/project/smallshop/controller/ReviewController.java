@@ -35,7 +35,7 @@ public class ReviewController {
         model.addAttribute("item", orderItem.getItem());
         model.addAttribute("reviewForm", new reviewForm());
 
-        return "item/createOrderItemReview";
+        return "review/createOrderItemReview";
     }
 
     @PostMapping("/item/{orderItemId}/review")
@@ -45,17 +45,60 @@ public class ReviewController {
         if (result.hasErrors()) {
 
             model.addAttribute("item", orderItem.getItem());
-            return "item/createOrderItemReview";
+            return "review/createOrderItemReview";
         }
 
         HttpSession session = request.getSession(false);
         Member member = (Member) session.getAttribute("member");
         Member findMember = memberService.findById(member.getId());
 
-        Review review = Review.createReview(findMember, orderItem.getItem(), form.getTitle(), form.getContent());
+        Review review = Review.createReview(findMember, orderItem.getItem(), orderItem, form.getTitle(), form.getContent());
         orderItem.setReviewCheck(true);
         reviewService.save(review);
 
         return "redirect:/";
+    }
+
+    @GetMapping("/item/{orderItemId}/review/update")
+    public String updateReview(@PathVariable("orderItemId") Long orderItemId, Model model) {
+
+        OrderItem orderItem = orderItemService.findOne(orderItemId);
+        Review review = reviewService.findByOrderItemId(orderItemId);
+
+        reviewForm reviewForm = new reviewForm();
+        reviewForm.setTitle(review.getTitle());
+        reviewForm.setContent(review.getContent());
+
+        model.addAttribute("item", orderItem.getItem());
+        model.addAttribute("reviewForm", reviewForm);
+
+        return "review/updateOrderItemReview";
+    }
+
+    @PostMapping("/item/{orderItemId}/review/update")
+    public String updateItemReview(@Valid reviewForm form, BindingResult result,
+                                   @PathVariable("orderItemId") Long orderItemId, Model model) {
+
+        OrderItem orderItem = orderItemService.findOne(orderItemId);
+
+        if (result.hasErrors()) {
+
+            model.addAttribute("item", orderItem.getItem());
+
+            return "review/updateOrderItemReview";
+        }
+
+        reviewService.updateReview(orderItemId, form.getTitle(), form.getContent());
+
+        return "redirect:/orderList/view/" + orderItem.getOrder().getId();
+    }
+
+    @GetMapping("/item/{orderItemId}/review/remove")
+    public String removeReview(@PathVariable("orderItemId") Long orderItemId) {
+
+        Long orderId = orderItemService.findOne(orderItemId).getOrder().getId();
+        reviewService.removeReviewByOrderItemId(orderItemId);
+
+        return "redirect:/orderList/view/" + orderId;
     }
 }

@@ -89,8 +89,12 @@
                                 </td>
                                 <td th:text="|${orderItem.count}개|">1</td>
                                 <td th:text="|${#numbers.formatInteger(orderItem.orderPrice, 3, 'COMMA')}원|" class="text-end">$79.99</td>
-                                <td th:if="${#strings.equals(order.status, 'COMP')} and ${orderItem.reviewCheck == false}"><a th:href="@{/item/{id}/review (id=${orderItem.id})}" href="#" class="btn btn-primary">후기 작성</a></td>
-                                <td th:if="${#strings.equals(order.status, 'COMP')} and ${orderItem.reviewCheck == true}"><button  class="btn btn-primary">후기 작성 완료</button></td>
+                                <td th:if="${#strings.equals(order.status, 'COMP')} and ${orderItem.reviewCheck == false}">
+                                    <a th:href="@{/item/{id}/review (id=${orderItem.id})}" href="#" class="btn btn-primary">후기 작성</a>
+                                </td>
+                                <td th:if="${#strings.equals(order.status, 'COMP')} and ${orderItem.reviewCheck == true}">
+                                    <a th:href="@{/item/{id}/review/update (id=${orderItem.id})}" class="btn btn-primary">후기 수정 및 삭제</a>
+                                </td>
                             </tr>
                             </tbody>
                             <tfoot>
