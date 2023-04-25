@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>order detail</title>
+    <style>
+        body{
+            background:#eee;
+        }
+        .card {
+            box-shadow: 0 20px 27px 0 rgb(0 0 0 / 5%);
+        }
+        .card {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            word-wrap: break-word;
+            background-color: #fff;
+            background-clip: border-box;
+            border: 0 solid rgba(0,0,0,.125);
+            border-radius: 1rem;
+        }
+        .text-reset {
+            --bs-text-opacity: 1;
+            color: inherit!important;
+        }
+        a {
+            color: #5465ff;
+            text-decoration: none;
+        }
+
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script>
+        $(document).ready(function() {
+            let message = "[[${msg}]]";
+            if (message != "") {
+                alert(message);
+            }else {
+            }
+        })
+    </script>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <!-- Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+</head>
+<body>
+<nav th:replace="fragments/bodyHeader :: bodyHeader" />
+<div class="container-fluid">
+
+    <div class="container">
+        <!-- Title -->
+        <div class="d-flex justify-content-between align-items-center py-3">
+            <h2 class="h5 mb-0" th:text="'주문 상세'">Order #16123222</h2>
+        </div>
+
+        <!-- Main content -->
+        <div class="row">
+            <div class="col-lg-8">
+                <!-- Details -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="mb-3 d-flex justify-content-between">
+                            <div>
+                                <span class="me-3" th:text="|주문 일시: ${#temporals.format(order.date, 'yyyy.MM.dd')}|">22-11-2021</span>
+                                <span class="me-3" th:text="|주문 번호: ${order.id}|">#16123222</span>
+                            </div>
+                            <div class="d-flex">
+                                <span class="badge rounded-pill bg-info" th:text="${order.status}">SHIPPING</span>
+                            </div>
+                        </div>
+                        <table class="table table-borderless">
+                            <tbody>
+                            <tr th:each="orderItem : ${order.orderItems}">
+                                <td>
+                                    <div class="d-flex mb-2">
+                                        <div class="flex-shrink-0">
+                                            <img th:src="${orderItem.item.content}" src="https://www.bootdey.com/image/280x280/87CEFA/000000" alt="" width="35" class="img-fluid">
+                                        </div>
+                                        <div class="flex-lg-grow-1 ms-3">
+                                            <h6 class="small mb-0"><a th:text="${orderItem.item.name}" th:href="@{/item/{id} (id=${orderItem.item.id})}" href="#" class="text-reset">Bluetooth HiFi</a></h6>
+                                            <span th:text="|품목: ${orderItem.item.dtype}|" class="small">Color: Black</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td th:text="|${orderItem.count}개|">1</td>
+                                <td th:text="|${#numbers.formatInteger(orderItem.orderPrice, 3, 'COMMA')}원|" class="text-end">$79.99</td>
+                                <td th:if="${#strings.equals(order.status, 'COMP')} and ${orderItem.reviewCheck == false}">
+                                    <a th:href="@{/item/{id}/review (id=${orderItem.id})}" href="#" class="btn btn-primary">후기 작성</a>
+                                </td>
+                                <td th:if="${#strings.equals(order.status, 'COMP')} and ${orderItem.reviewCheck == true}">
+                                    <a th:href="@{/item/{id}/review/update (id=${orderItem.id})}" class="btn btn-primary">후기 수정 및 삭제</a>
+                                </td>
+                            </tr>
+                            </tbody>
+                            <tfoot>
+                            <tr class="fw-bold">
+                                <td colspan="2">TOTAL</td>
+                                <td th:text="|${#numbers.formatInteger(#aggregates.sum(order.orderItems.![orderPrice]), 3, 'COMMA')}원|" class="text-end">$169,98</td>
+                            </tr>
+                            </tfoot>
+                        </table>
+                        <a th:href="@{/order/cancel/{id} (id=${order.id})}" href="#" class="btn btn-danger">주문 취소</a>
+                        <a th:href="@{/order/success/{id} (id=${order.id})}" href="#" class="btn btn-success">주문 완료</a>
+                    </div>
+                </div>
+                <!-- 배송 정보 -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <h3 class="h6">배송 정보
+                                <p th:text="|Total: ${#numbers.formatInteger(#aggregates.sum(order.orderItems.![orderPrice]), 3, 'COMMA')}원|">Total: $169,98 </p>
+                                <p>배송 현황: <span th:text="${order.delivery.status}" class="badge bg-success rounded-pill">PAID</span></h3></p>
+                            </div>
+                            <div class="col-lg-6">
+                                <h3 th:text="'배송 주소'" class="h6">Billing address</h3>
+                                <address>
+                                    <strong th:text="${order.receiverName}">John Doe</strong><br th:text="${order.receiverAddress}">
+                                    <br th:text="|수령인 번호: ${order.receiverPhone}|">
+                                </address>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+            </div>
+        </div>
+    </div>
+</div>
+<footer th:replace="fragments/footer :: footer"></footer>
+</body>
+</html>
