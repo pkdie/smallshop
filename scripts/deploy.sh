@@ -27,8 +27,8 @@ chmod +x $JAR_NAME
 
 echo "> $JAR_NAME 실행"
 nohup java -jar \
-        -Dspring.config.location=classpath:/application.properties,classpath:/application-aws.properties \
-        -Dspring.profiles.active=real \
+        -Dspring.config.location=classpath:/application.properties,/home/ubuntu/app/application-aws.properties \
+        -Dspring.profiles.active=ubuntu \
         $JAR_NAME > $REPOSITORY/nohup.out 2>&1 &
 #-Dspring.config.location=classpath:/application.properties,classpath:/application-
 #real.properties,/home/ubuntu/app/application-oauth.properties,/home/ubuntu/app/application-real-
