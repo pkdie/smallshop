@@ -1,15 +1,13 @@
 package com.project.smallshop.controller;
 
-import com.project.smallshop.Service.CouponService;
-import com.project.smallshop.Service.ItemService;
-import com.project.smallshop.Service.MemberCouponService;
-import com.project.smallshop.Service.MemberService;
+import com.project.smallshop.Service.*;
 import com.project.smallshop.domain.Coupon;
 import com.project.smallshop.domain.MemberCoupon;
 import com.project.smallshop.domain.item.Item;
 import com.project.smallshop.domain.member.Member;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -30,6 +28,7 @@ public class AdminController {
     private final ItemService itemService;
     private final CouponService couponService;
     private final MemberCouponService memberCouponService;
+    private final S3Uploader s3Uploader;
 
     @GetMapping("admin/home")
     public String admin() {
@@ -42,26 +41,15 @@ public class AdminController {
         return "admin/createItemForm";
     }
 
-    @PostMapping("admin/item/new")
+    @PostMapping(value = "admin/item/new", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public String create(@RequestParam("image") MultipartFile imageFile,
                          @RequestParam("content") MultipartFile contentFile,
                          ItemForm form) throws IOException {
 
-        String image = "\\image\\" + imageFile.getOriginalFilename();
-        String content = "\\image\\" + contentFile.getOriginalFilename();
-        log.info(image);
-        log.info(content);
+        String imageUrl = s3Uploader.upload(imageFile, "images");
+        String contentUrl = s3Uploader.upload(contentFile, "images");
 
-
-        File imagePath = new File("C:\\Users\\t\\Desktop\\프로젝트 관련\\smallshop\\src\\main\\resources\\static\\" + image);
-        File contentPath = new File("C:\\Users\\t\\Desktop\\프로젝트 관련\\smallshop\\src\\main\\resources\\static\\" + content);
-
-        imageFile.transferTo(imagePath);
-        contentFile.transferTo(contentPath);
-
-        log.info("C:\\Users\\t\\Desktop\\프로젝트 관련\\smallshop\\src\\main\\resources\\static\\" + image);
-
-        Item item = Item.createItem(form.getDtype(), form.getName(), form.getPrice(), form.getStock(), image, content, form.getOutline() ,form.getAuthor(), form.getIsbn(), form.getBrand());
+        Item item = Item.createItem(form.getDtype(), form.getName(), form.getPrice(), form.getStock(), imageUrl, contentUrl, form.getOutline() ,form.getAuthor(), form.getIsbn(), form.getBrand());
 
         itemService.save(item);
 
