@@ -36,6 +36,8 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
+    private String merchantUid;
+
     @OneToOne(mappedBy = "order", fetch = LAZY, cascade = CascadeType.ALL)
     private Delivery delivery;
 
@@ -49,16 +51,14 @@ public class Order {
         member.getOrders().add(this);
     }
 
-    public static Order createOrder(Member member, String receiverName, String receiverPhone, String receiverAddress, Delivery delivery, OrderItem... orderItems) {
+    public static Order createOrder(Member member, String receiverName, String receiverPhone, String receiverAddress, Delivery delivery, String merchantUid) {
         Order order = new Order();
         order.setMember(member);
         order.setReceiverName(receiverName);
         order.setReceiverPhone(receiverPhone);
         order.setReceiverAddress(receiverAddress);
         delivery.setOrder(order);
-        for (OrderItem orderItem : orderItems) {
-            orderItem.setOrder(order);
-        }
+        order.setMerchantUid(merchantUid);
         order.setDate(LocalDateTime.now());
         order.setStatus(OrderStatus.ORDER);
 

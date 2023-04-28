@@ -8,6 +8,40 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
   <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
   <link rel="stylesheet" href="/css/payment.css">
+  <script src="https://cdn.iamport.kr/v1/iamport.js"></script>
+  <script th:with="totalPrice=${#aggregates.sum(cartItems.![price])}">
+    var IMP = window.IMP; // 생략 가능
+    IMP.init("imp60187283"); // 예: imp00000000a
+
+    let date = new Date();
+    let hours = date.getHours().toString();
+    let minutes = date.getMinutes().toString();
+    let seconds = date.getSeconds().toString();
+    let milliseconds = date.getMilliseconds().toString();
+    let merchantUid = hours + minutes + seconds + milliseconds;
+
+    function requestPay() {
+      IMP.request_pay({
+        pg: "html5_inicis.INIpayTest",
+        pay_method: "card",
+        merchant_uid: merchantUid,   // 주문번호
+        name: "[[${cartItems.get(0).item.name}]]" + " 외 " + "[[${cartItems.size() - 1}]]" + "개",
+        amount: [[${totalPrice}]],                         // 숫자 타입
+        buyer_email: "[[${session.member.email}]]",
+        buyer_name: "[[${session.member.name}]]",
+        buyer_tel: "[[${session.member.phone}]]",
+        buyer_addr: "[[${session.member.address}]]",
+        // buyer_postcode: "01181"
+      }, function (rsp) { // callback
+        if (rsp.success) {
+          console.log(rsp);
+        } else {
+          console.log(rsp);
+          alert("에러 코드:" + rsp.error_code + "," + "에러 메시지:" + rsp.error_msg)
+        }
+      });
+    }
+  </script>
 </head>
 <body>
 <nav th:replace="fragments/bodyHeader :: bodyHeader" />
@@ -57,7 +91,7 @@
                 </button>
               </div>
               <div class="form-group col-sm-12">
-                <button type="submit" class="btn btn-primary btn-block">Proceed</button>
+                <button type="button" onclick="requestPay()" class="btn btn-primary btn-block">Proceed</button>
               </div>
             </div>
           </div>
