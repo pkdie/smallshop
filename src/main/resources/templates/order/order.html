@@ -20,13 +20,23 @@
     let milliseconds = date.getMilliseconds().toString();
     let merchantUid = hours + minutes + seconds + milliseconds;
 
+    function formCheck() {
+      if (document.getElementById("receiverName").value === "" || document.getElementById("receiverPhone").value === "" ||
+              document.getElementById("receiverAddress").value === "") {
+        alert("필요한 정보를 입력해주세요.")
+      } else {
+        requestPay();
+      }
+    }
+
     function requestPay() {
       IMP.request_pay({
         pg: "html5_inicis.INIpayTest",
         pay_method: "card",
         merchant_uid: merchantUid,   // 주문번호
         name: "[[${cartItems.get(0).item.name}]]" + " 외 " + "[[${cartItems.size() - 1}]]" + "개",
-        amount: [[${totalPrice}]],                         // 숫자 타입
+        // amount: [[${totalPrice}]],                         // 숫자 타입
+        amount: 100,                         // 숫자 타입
         buyer_email: "[[${session.member.email}]]",
         buyer_name: "[[${session.member.name}]]",
         buyer_tel: "[[${session.member.phone}]]",
@@ -34,9 +44,15 @@
         // buyer_postcode: "01181"
       }, function (rsp) { // callback
         if (rsp.success) {
-          console.log(rsp);
+          // console.log(rsp);
+          let hiddeninput = document.createElement("input");
+          hiddeninput.setAttribute("value", merchantUid);
+          hiddeninput.setAttribute("name", "merchantUid");
+          let form = document.getElementById("orderData");
+          form.append(hiddeninput);
+          form.submit();
         } else {
-          console.log(rsp);
+          // console.log(rsp);
           alert("에러 코드:" + rsp.error_code + "," + "에러 메시지:" + rsp.error_msg)
         }
       });
@@ -51,7 +67,7 @@
         <div class="block-heading">
           <h2>주문</h2>
         </div>
-        <form th:object="${orderForm}" method="post">
+        <form th:object="${orderForm}" method="post" id="orderData">
           <div class="products">
             <h3 class="title" th:text="주문목록">Checkout</h3>
             <div class="item" th:each="cartItem : ${cartItems}">
@@ -91,7 +107,7 @@
                 </button>
               </div>
               <div class="form-group col-sm-12">
-                <button type="button" onclick="requestPay()" class="btn btn-primary btn-block">Proceed</button>
+                <button type="button" onclick="formCheck()" class="btn btn-primary btn-block">Proceed</button>
               </div>
             </div>
           </div>

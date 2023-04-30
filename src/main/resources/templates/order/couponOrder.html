@@ -9,9 +9,9 @@
   <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
   <link rel="stylesheet" href="/css/payment.css">
   <script>
+    let sum = 0;
     window.onload = function() {
       let prices = document.getElementsByClassName("price");
-      let sum = 0;
       for (const price of prices) {
         let priceInnerText = price.innerText;
         let split = priceInnerText.split(" ");
@@ -19,9 +19,58 @@
         priceString = Number(priceString.replace(",", "").replace("원", ""));
         sum += priceString;
       }
-      sum = sum.toLocaleString();
+      let sum1 = sum.toLocaleString();
       let totalPrice = document.getElementById("totalPrice");
-      totalPrice.innerText = sum + "원";
+      totalPrice.innerText = sum1 + "원";
+    }
+  </script>
+  <script src="https://cdn.iamport.kr/v1/iamport.js"></script>
+  <script>
+    var IMP = window.IMP; // 생략 가능
+    IMP.init("imp60187283"); // 예: imp00000000a
+
+    let date = new Date();
+    let hours = date.getHours().toString();
+    let minutes = date.getMinutes().toString();
+    let seconds = date.getSeconds().toString();
+    let milliseconds = date.getMilliseconds().toString();
+    let merchantUid = hours + minutes + seconds + milliseconds;
+
+    function formCheck() {
+      if (document.getElementById("receiverName").value === "" || document.getElementById("receiverPhone").value === "" ||
+              document.getElementById("receiverAddress").value === "") {
+        alert("필요한 정보를 입력해주세요.")
+      } else {
+        requestPay();
+      }
+    }
+
+    function requestPay() {
+      IMP.request_pay({
+        pg: "html5_inicis.INIpayTest",
+        pay_method: "card",
+        merchant_uid: merchantUid,   // 주문번호
+        name: "[[${cartItems.get(0).item.name}]]" + " 외 " + "[[${cartItems.size() - 1}]]" + "개",
+        amount: 100,
+        buyer_email: "[[${session.member.email}]]",
+        buyer_name: "[[${session.member.name}]]",
+        buyer_tel: "[[${session.member.phone}]]",
+        buyer_addr: "[[${session.member.address}]]",
+        // buyer_postcode: "01181"
+      }, function (rsp) { // callback
+        if (rsp.success) {
+          // console.log(rsp);
+          let hiddeninput = document.createElement("input");
+          hiddeninput.setAttribute("value", merchantUid);
+          hiddeninput.setAttribute("name", "merchantUid");
+          let form = document.getElementById("orderData");
+          form.append(hiddeninput);
+          form.submit();
+        } else {
+          // console.log(rsp);
+          alert("에러 코드:" + rsp.error_code + "," + "에러 메시지:" + rsp.error_msg)
+        }
+      });
     }
   </script>
 </head>
@@ -33,7 +82,7 @@
         <div class="block-heading">
           <h2>주문</h2>
         </div>
-        <form th:object="${orderForm}" method="post">
+        <form th:object="${orderForm}" method="post" id="orderData">
           <div class="products">
             <h3 class="title" th:text="주문목록">Checkout</h3>
             <div class="item" th:each="cartItem : ${cartItems}">
@@ -76,7 +125,7 @@
                 </button>
               </div>
               <div class="form-group col-sm-12">
-                <button type="submit" class="btn btn-primary btn-block">Proceed</button>
+                <button type="button" onclick="formCheck()" class="btn btn-primary btn-block">Proceed</button>
               </div>
             </div>
           </div>
@@ -116,6 +165,7 @@
         </table>
       </div>
       *쿠폰은 한 개만 적용 가능합니다.
+      *주문 취소 시 쿠폰은 소멸합니다.
       <div class="modal-footer">
         <button type="button" class="btn btn-primary" data-dismiss="modal">닫기 <i class="glyphicon glyphicon-chevron-right"></i></button>
       </div>

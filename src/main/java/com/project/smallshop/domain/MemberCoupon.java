@@ -6,9 +6,6 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
 import static javax.persistence.FetchType.*;
 
 @Entity
@@ -29,10 +26,6 @@ public class MemberCoupon {
 
     private int count;
 
-    private LocalDate startDate;
-
-    private LocalDate endDate;
-
     // ---------------------- 비즈니스 로직
 
     public void setMember(Member member) {
@@ -50,8 +43,6 @@ public class MemberCoupon {
         memberCoupon.setMember(member);
         memberCoupon.setCoupon(coupon);
         memberCoupon.setCount(count);
-        memberCoupon.setStartDate(LocalDate.now());
-        memberCoupon.setEndDate(LocalDate.now().plusMonths(1));
 
         return memberCoupon;
     }

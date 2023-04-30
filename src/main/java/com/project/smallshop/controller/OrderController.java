@@ -11,6 +11,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
@@ -48,7 +49,8 @@ public class OrderController {
     }
 
     @PostMapping("/order")
-    public String createOrder(@Valid OrderForm form, BindingResult result, Model model, HttpServletRequest request) {
+    public String createOrder(@Valid OrderForm form, BindingResult result, Model model,
+                              HttpServletRequest request, @RequestParam("merchantUid") String merchantUid) {
 
         HttpSession session = request.getSession(false);
         Member member = (Member) session.getAttribute("member");
@@ -64,7 +66,7 @@ public class OrderController {
         }
 
         Cart cart = cartService.findByMemberId(member.getId());
-        orderService.order(member.getId(), form.getReceiverName(), form.getReceiverPhone(), form.getReceiverAddress());
+        orderService.order(member.getId(), form.getReceiverName(), form.getReceiverPhone(), form.getReceiverAddress(), merchantUid);
         cartItemService.removeMemberCart(cart.getId());
 
         return "redirect:/order/complete";
@@ -93,7 +95,7 @@ public class OrderController {
                                     @Valid OrderForm form,
                                     BindingResult result,
                                     Model model,
-                                    HttpServletRequest request) {
+                                    HttpServletRequest request, @RequestParam("merchantUid") String merchantUid) {
 
         HttpSession session = request.getSession(false);
         Member member = (Member) session.getAttribute("member");
@@ -111,7 +113,7 @@ public class OrderController {
         }
 
         Cart cart = cartService.findByMemberId(member.getId());
-        orderService.couponOrder(member.getId(), form.getReceiverName(), form.getReceiverPhone(), form.getReceiverAddress(), memberCouponId);
+        orderService.couponOrder(member.getId(), form.getReceiverName(), form.getReceiverPhone(), form.getReceiverAddress(), memberCouponId, merchantUid);
         cartItemService.removeMemberCart(cart.getId());
 
         return "redirect:/order/complete";

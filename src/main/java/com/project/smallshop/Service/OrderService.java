@@ -1,17 +1,14 @@
 package com.project.smallshop.Service;
 
 import com.project.smallshop.domain.Order;
-import com.project.smallshop.domain.member.Member;
-import org.aspectj.weaver.ast.Or;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface OrderService {
 
-    Long order(Long memberId, String receiverName, String receiverPhone, String receiverAddress);
+    Long order(Long memberId, String receiverName, String receiverPhone, String receiverAddress, String merchantUid);
 
-    Long couponOrder(Long memberId, String receiverName, String receiverPhone, String receiverAddress, Long memberCouponId);
+    Long couponOrder(Long memberId, String receiverName, String receiverPhone, String receiverAddress, Long memberCouponId, String merchantUid);
 
     void cancelOrder(Long orderId);
 

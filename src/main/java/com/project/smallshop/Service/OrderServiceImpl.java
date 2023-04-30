@@ -25,7 +25,7 @@ public class OrderServiceImpl implements OrderService{
 
     @Transactional(readOnly = false)
     @Override
-    public Long order(Long memberId, String receiverName, String receiverPhone, String receiverAddress) {
+    public Long order(Long memberId, String receiverName, String receiverPhone, String receiverAddress, String merchantUid) {
 
         //엔티티 조회
         Member member = memberRepository.findById(memberId);
@@ -37,7 +37,7 @@ public class OrderServiceImpl implements OrderService{
         delivery.setStatus(DeliveryStatus.READY);
 
         //주문 생성
-        Order order = Order.createOrder(member, receiverName, receiverPhone, receiverAddress, delivery);
+        Order order = Order.createOrder(member, receiverName, receiverPhone, receiverAddress, delivery, merchantUid);
 
         //주문상품 생성
         for (CartItem cartItem : cartItems) {
@@ -67,7 +67,7 @@ public class OrderServiceImpl implements OrderService{
 
     @Transactional(readOnly = false)
     @Override
-    public Long couponOrder(Long memberId, String receiverName, String receiverPhone, String receiverAddress, Long memberCouponId) {
+    public Long couponOrder(Long memberId, String receiverName, String receiverPhone, String receiverAddress, Long memberCouponId, String merchantUid) {
 
         //엔티티 조회
         Member member = memberRepository.findById(memberId);
@@ -80,7 +80,7 @@ public class OrderServiceImpl implements OrderService{
         delivery.setStatus(DeliveryStatus.READY);
 
         //주문 생성
-        Order order = Order.createOrder(member, receiverName, receiverPhone, receiverAddress, delivery);
+        Order order = Order.createOrder(member, receiverName, receiverPhone, receiverAddress, delivery, merchantUid);
 
         //주문상품 생성
         for (CartItem cartItem : cartItems) {
@@ -118,7 +118,7 @@ public class OrderServiceImpl implements OrderService{
         return order.getId();
     }
 
-    @Transactional(readOnly = false )
+    @Transactional(readOnly = false)
     @Override
     public void cancelOrder(Long orderId) {
         Order order = orderRepository.findOne(orderId);
