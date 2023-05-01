@@ -46,7 +46,7 @@ public class Member {
     @OneToMany(mappedBy = "member")
     private List<MemberCoupon> memberCoupons = new ArrayList<>();
 
-    // Member - Cart는 Cart에서 Member를 참조하는 단방향으로만 만들어야 n + 1문제가 해결된다.
+    // OneToOne관계에선 단방향으로만 만들어야 n + 1문제가 해결된다.
 //    @OneToOne(mappedBy = "member", fetch = LAZY)
 //    private Cart cart;
 

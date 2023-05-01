@@ -51,7 +51,7 @@
         pay_method: "card",
         merchant_uid: merchantUid,   // 주문번호
         name: "[[${cartItems.get(0).item.name}]]" + " 외 " + "[[${cartItems.size() - 1}]]" + "개",
-        amount: 100,
+        amount: sum,
         buyer_email: "[[${session.member.email}]]",
         buyer_name: "[[${session.member.name}]]",
         buyer_tel: "[[${session.member.phone}]]",
