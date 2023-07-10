@@ -65,7 +65,7 @@ Spring과 JPA로 직접 구현한 개인 프로젝트 쇼핑몰 smallshop
 
 ## ER 다이어그램
 
-
+<img src='https://github.com/pkdie/smallshop/assets/112155469/4240fa46-289f-4d4c-9ed0-f2cc5108dcb4'>
 
 ## 기능 구현
 
