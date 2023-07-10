@@ -61,7 +61,7 @@ Spring과 JPA로 직접 구현한 개인 프로젝트 쇼핑몰 smallshop
 
 ## 시스템 아키텍처
 
-
+<img src='https://github.com/pkdie/smallshop/assets/112155469/2370ae0a-07ee-4cee-94f1-3ca8fc4123d0'>
 
 ## ER 다이어그램
 
