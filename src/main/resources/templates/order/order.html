@@ -40,10 +40,8 @@
         buyer_name: "[[${session.member.name}]]",
         buyer_tel: "[[${session.member.phone}]]",
         buyer_addr: "[[${session.member.address}]]",
-        // buyer_postcode: "01181"
-      }, function (rsp) { // callback
+      }, function (rsp) {
         if (rsp.success) {
-          // console.log(rsp);
           let hiddeninput = document.createElement("input");
           hiddeninput.setAttribute("value", merchantUid);
           hiddeninput.setAttribute("name", "merchantUid");
@@ -51,7 +49,6 @@
           form.append(hiddeninput);
           form.submit();
         } else {
-          // console.log(rsp);
           alert("에러 코드:" + rsp.error_code + "," + "에러 메시지:" + rsp.error_msg)
         }
       });
