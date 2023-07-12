@@ -99,7 +99,7 @@ public class AdminController {
     @GetMapping("/admin/coupon/new")
     public String createCouponForm(Model model) {
         model.addAttribute("couponForm", new CouponForm());
-        return "/admin/createCouponForm";
+        return "admin/createCouponForm";
     }
 
     @PostMapping("/admin/coupon/new")
